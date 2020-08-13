@@ -27,7 +27,6 @@ def get_env_and_start(witcher_level, enemy_level, enemy_amount):
     witcher = Witcher(witcher_level)
     type_enemy = random.randint(0, 2)
     enemies = []
-    print(type_enemy)
     if type_enemy == 0:
         for el in range(0, enemy_amount):
             drowner = Drowner(enemy_level)

@@ -3,11 +3,11 @@ class Unit:
 
     def __init__(self, level):
         self.level = level
-        Unit.update_amount_of_alive(0)
+        Unit.update_amount_of_alive(True)
 
     @staticmethod
-    def update_amount_of_alive(number):
-        if number > 0:
+    def update_amount_of_alive(created):
+        if not created:
             Unit.amount_of_alive -= 1
         else:
             Unit.amount_of_alive += 1
