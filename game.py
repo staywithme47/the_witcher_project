@@ -11,16 +11,8 @@ class Game:
         self.turn = 0
         self.history = history
 
-    def enemy_is_alive(self) -> bool:
-        max_hp = 0
-        for enemy in self.enemies:
-            if enemy.hp > max_hp:
-                max_hp = enemy.hp
-
-        if max_hp == 0:
-            return False
-        else:
-            return True
+    def enemies_is_alive(self) -> bool:
+        return len(self.enemies) > 0
 
     def get_damage_to_enemies(self, inf: list) -> PlayerAction:
         result: tuple = self.witcher.next_move(self.history, self.turn, inf)
@@ -31,8 +23,6 @@ class Game:
         for enemy in self.enemies:
             enemy.next_action(result[0], result[1], self.turn, self.witcher, self.history, self.enemies)
 
-        if result == PlayerAction.dodge:
-            return result[0]
         return result[0]
 
     def get_damage_to_witcher(self, result: PlayerAction) -> None:
@@ -41,6 +31,7 @@ class Game:
 
         if result == PlayerAction.axiy:
             count = 0
+
             for enemy in self.enemies:
 
                 count += 1
@@ -53,10 +44,11 @@ class Game:
 
             while True:
                 if len(self.enemies) == 1:
-                    damage = 0
                     break
+
                 if count > 1:
                     defender = random.choice(self.enemies)
+
                 else:
                     break
 
@@ -91,10 +83,10 @@ class Game:
         for i in range(len(self.enemies)):
             enemy = self.enemies[i]
             if enemy == attacker:
-                damage = 0
                 print('Противник номер {0} находится под действием аксия'.format(i))
                 self.history.append('Противник номер {0} находится под действием аксия'.format(i))
                 continue
+
             count = 0
 
             if isinstance(enemy, Drowner) or isinstance(enemy, Bandit):
@@ -110,8 +102,10 @@ class Game:
                 for _ in range(enemy.attack_speed):
                     if count == 1 and isinstance(enemy, Bandit):
                         damage = enemy.attack_power / 3
+
                     else:
                         damage = enemy.attack_power
+
                     if random.random() < actual_accuracy:
                         if random.random() < enemy.crit:
                             damage = damage*2
@@ -148,6 +142,7 @@ class Game:
                                 self.history.append(
                                     'Ход {0}. Противник номер {1} нанес критический урон {2} по Ведьмаку'.format(
                                         self.turn, i, int(damage)))
+
                             else:
                                 self.witcher.hp = self.witcher.hp - damage
                                 print(
@@ -156,6 +151,7 @@ class Game:
                                 self.history.append(
                                     'Ход {0}. Противник номер {1} попал по Ведьмаку и нанес {2} урона '.format(
                                                                                              self.turn, i, int(damage)))
+
                     else:
                         print('Ход {0}. Противник номер {1} промахнулся по ведьмаку'.format(self.turn, i))
                         self.history.append(
@@ -171,6 +167,7 @@ class Game:
 
                 if random.random() < actual_accuracy:
                     damage = enemy.attack_power
+
                     if random.random() < enemy.crit:
                         damage = enemy.attack_power * 2
                         print('Ход {0}. Противник номер {1} кританул по Ведьмаку'.format(self.turn, i))
@@ -226,8 +223,6 @@ class Game:
             inf: list = []
             inf = list(map(lambda enemy: enemy.get_fullname(), self.enemies))
             result = self.get_damage_to_enemies(inf)
-            if not self.enemy_is_alive():
-                break
 
             for enemy in self.enemies:
                 if enemy.hp <= 0:
@@ -235,6 +230,9 @@ class Game:
                     Unit.update_amount_of_alive(number)
 
             self.enemies: list = list(filter(lambda x: x.hp > 0, self.enemies))
+            if not self.enemies_is_alive():
+                break
+
             self.get_damage_to_witcher(result)
 
             if self.witcher.hp <= 0:
