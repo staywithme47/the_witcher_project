@@ -30,11 +30,7 @@ class Game:
         accuracy = self.enemies[0].accuracy
 
         if result == PlayerAction.axiy:
-            count = 0
-
-            for enemy in self.enemies:
-
-                count += 1
+            count = len(self.enemies)
 
             if count == 0:
                 return
@@ -236,8 +232,7 @@ class Game:
             self.get_damage_to_witcher(result)
 
             if self.witcher.hp <= 0:
-                number = 1
-                Unit.update_amount_of_alive(number)
+                Unit.update_amount_of_alive(1)
                 break
 
             self.turn += 1
