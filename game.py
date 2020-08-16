@@ -69,8 +69,6 @@ class Game:
                 self.history.append('Противник номер {0} находится под действием аксия'.format(i))
                 continue
 
-            count = 0
-
             enemy.deal_damage_to_witcher(result, self.witcher, self.turn, self.history)
 
     def fight(self) -> str:

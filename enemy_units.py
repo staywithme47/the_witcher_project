@@ -201,11 +201,11 @@ class Bandit(Unit):
 
         else:
             actual_accuracy = self.accuracy
-        count = 0
+
         if not self.dodge or not self.block:
 
-            for _ in range(self.attack_speed):
-                if count == 1:
+            for i in range(self.attack_speed):
+                if i == 1:
                     damage = self.attack_power / 3
 
                 else:
@@ -253,7 +253,6 @@ class Bandit(Unit):
                                                                                                   turn, int(damage)))
                             history.append(
                                 'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
-                    count += 1
 
 class Ghost(Unit):
     def __init__(self, level):
@@ -469,7 +468,6 @@ class Drowner(Unit):
         else:
             actual_accuracy = self.accuracy
 
-        count = 0
 
         for _ in range(self.attack_speed):
             damage = self.attack_power
@@ -517,4 +515,3 @@ class Drowner(Unit):
                 print('Ход {0}. Противник промахнулся по ведьмаку'.format(turn))
                 history.append(
                     'Ход {0}. Противник промахнулся по ведьмаку.HP ведьмака {1}'.format(turn, witcher.hp))
-            count += 1
