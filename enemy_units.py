@@ -195,6 +195,65 @@ class Bandit(Unit):
         if not self.crying or result == PlayerAction.dodge:
             self.witcher_to_enemies(result, damage, turn, witcher, history, enemies)
 
+    def deal_damage_to_witcher(self, result, witcher, turn, history):
+        if result == PlayerAction.dodge:
+            actual_accuracy = self.accuracy / 3
+
+        else:
+            actual_accuracy = self.accuracy
+        count = 0
+        if not self.dodge or not self.block:
+
+            for _ in range(self.attack_speed):
+                if count == 1:
+                    damage = self.attack_power / 3
+
+                else:
+                    damage = self.attack_power
+
+                if random.random() < actual_accuracy:
+                    if random.random() < self.crit:
+                        damage = damage * 2
+                        print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+                        history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+
+                    if witcher.shield > 0:
+                        if damage > witcher.shield:
+                            diff_damage = damage - witcher.shield
+                            diff_shield = damage - diff_damage
+                            witcher.shield = witcher.shield - diff_shield
+                            print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(
+                                                                                             turn, int(diff_shield)))
+                            history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                                                                                        .format(turn, int(diff_shield)))
+                            witcher.hp = witcher.hp - diff_damage
+                            print('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'.format(
+                                                                                                  turn, diff_damage))
+                            history.append('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'
+                                                                                     .format(turn, int(diff_damage)))
+
+                        else:
+                            witcher.shield = witcher.shield - damage
+                            print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(
+                                                                                                       turn, damage))
+                            history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                                                                                             .format(turn, int(damage)))
+
+                    else:
+                        if damage == self.attack_power * 2 or damage == (self.attack_power / 3) * 2:
+                            witcher.hp = witcher.hp - damage
+                            print('Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+                            history.append(
+                                'Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+
+                        else:
+                            witcher.hp = witcher.hp - damage
+                            print(
+                                'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(
+                                                                                                  turn, int(damage)))
+                            history.append(
+                                'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
+                    count += 1
 
 class Ghost(Unit):
     def __init__(self, level):
@@ -256,6 +315,56 @@ class Ghost(Unit):
                 print('Ход {0}. Ведьмак промахнулся по Призраку'.format(turn))
                 history.append('Ход {0}. Ведьмак промахнулся по Призраку'.format(turn))
 
+    def deal_damage_to_witcher(self, result, witcher, turn, history):
+        if result == PlayerAction.dodge:
+            actual_accuracy = self.accuracy / 3
+
+        else:
+            actual_accuracy = self.accuracy
+
+        if random.random() < actual_accuracy:
+            damage = self.attack_power
+
+            if random.random() < self.crit:
+                damage = self.attack_power * 2
+                print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+                history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+
+            if witcher.shield > 0:
+                if damage > witcher.shield:
+                    diff_damage = damage - witcher.shield
+                    diff_shield = damage - diff_damage
+                    witcher.shield = witcher.shield - diff_shield
+                    print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, int(diff_shield)))
+                    history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, diff_shield))
+                    witcher.hp = witcher.hp - diff_damage
+                    print('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'.format(turn, int(diff_damage)))
+                    history.append('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'
+                                                                                        .format(turn, int(diff_damage)))
+
+                else:
+                    witcher.shield = witcher.shield - damage
+                    print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, int(damage)))
+                    history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, int(damage)))
+
+            else:
+                if damage > self.attack_power:
+                    witcher.hp = witcher.hp - damage
+                    print(
+                        'Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+                    history.append(
+                        'Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+                else:
+                    witcher.hp = witcher.hp - damage
+                    print(
+                        'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
+                    history.append(
+                        'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
+        else:
+            print('Ход {0}.Противник промахнулся по ведьмаку'.format(turn))
+            history.append(
+                'Ход {0}.Противник промахнулся по ведьмаку.HP ведьмака {1}'.format(turn, witcher.hp))
+
 
 class Drowner(Unit):
     def __init__(self, level):
@@ -279,7 +388,7 @@ class Drowner(Unit):
             self.ability -= 1
             self.in_rage = True
 
-    def next_action(self, result, damage, turn, witcher, history,enemies):
+    def next_action(self, result, damage, turn, witcher, history, enemies):
         self.attack_speed = 1
         self.in_fury(turn, witcher, result)
 
@@ -352,3 +461,60 @@ class Drowner(Unit):
             else:
                 print('Ход {0}. Ведьмак промахнулся по Утопцу'.format(turn))
                 history.append('Ход {0}. Ведьмак промахнулся по Утопцу'.format(turn))
+
+    def deal_damage_to_witcher(self, result, witcher, turn, history):
+        if result == PlayerAction.dodge:
+            actual_accuracy = self.accuracy / 3
+
+        else:
+            actual_accuracy = self.accuracy
+
+        count = 0
+
+        for _ in range(self.attack_speed):
+            damage = self.attack_power
+
+            if random.random() < actual_accuracy:
+                if random.random() < self.crit:
+                    damage = damage * 2
+                    print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+                    history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
+
+                if witcher.shield > 0:
+                    if damage > witcher.shield:
+                        diff_damage = damage - witcher.shield
+                        diff_shield = damage - diff_damage
+                        witcher.shield = witcher.shield - diff_shield
+                        print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, int(diff_shield)))
+                        history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                                                                                        .format(turn, int(diff_shield)))
+                        witcher.hp = witcher.hp - diff_damage
+                        print('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'.format(turn, diff_damage))
+                        history.append('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'
+                                                                                        .format(turn, int(diff_damage)))
+
+                    else:
+                        witcher.shield = witcher.shield - damage
+                        print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(turn, damage))
+                        history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                                                                                             .format(turn, int(damage)))
+
+                else:
+                    if damage == self.attack_power * 2 or damage == (self.attack_power / 3) * 2:
+                        witcher.hp = witcher.hp - damage
+                        print('Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+                        history.append(
+                            'Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+
+                    else:
+                        witcher.hp = witcher.hp - damage
+                        print(
+                            'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
+                        history.append(
+                            'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
+
+            else:
+                print('Ход {0}. Противник промахнулся по ведьмаку'.format(turn))
+                history.append(
+                    'Ход {0}. Противник промахнулся по ведьмаку.HP ведьмака {1}'.format(turn, witcher.hp))
+            count += 1
