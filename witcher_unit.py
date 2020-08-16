@@ -194,3 +194,41 @@ class Witcher(Unit):
                 self.energy = self.max_energy
 
         return playerAction, damage
+
+    def witcher_shield_damage(self, damage, turn, history, critical_hit):
+        if self.shield > 0:
+            if damage > self.shield:
+                diff_damage = damage - self.shield
+                diff_shield = damage - diff_damage
+                self.shield = self.shield - diff_shield
+                print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(
+                    turn, int(diff_shield)))
+                history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                               .format(turn, int(diff_shield)))
+                self.hp = self.hp - diff_damage
+                print('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'.format(
+                    turn, diff_damage))
+                history.append('Ход {0}. Противник пробил щит и нанес Ведьмаку {1} урона'
+                               .format(turn, int(diff_damage)))
+
+            else:
+                self.shield = self.shield - damage
+                print('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'.format(
+                    turn, damage))
+                history.append('Ход {0}. Противник попал по щиту. Щит поглотил {1} урона'
+                               .format(turn, int(damage)))
+
+        else:
+            if critical_hit:
+                self.hp = self.hp - damage
+                print('Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+                history.append(
+                    'Ход {0}. Противник нанес критический урон {1} по Ведьмаку'.format(turn, int(damage)))
+
+            else:
+                self.hp = self.hp - damage
+                print(
+                    'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(
+                        turn, int(damage)))
+                history.append(
+                    'Ход {0}. Противник попал по Ведьмаку и нанес {1} урона '.format(turn, int(damage)))
