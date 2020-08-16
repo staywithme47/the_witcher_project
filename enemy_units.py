@@ -219,8 +219,10 @@ class Bandit(Unit):
                         print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
                         history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
 
-                witcher.witcher_shield_damage(damage, turn, history, critical_hit)
+                    witcher.witcher_main_damage(damage, turn, history, critical_hit)
 
+                else:
+                    print('Ход {0}. Противник промахнулся по Ведьмаку'.format(turn))
 
 class Ghost(Unit):
     def __init__(self, level):
@@ -298,8 +300,9 @@ class Ghost(Unit):
                 print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
                 history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
 
-        witcher.witcher_shield_damage(damage, turn, history, critical_hit)
-
+            witcher.witcher_main_damage(damage, turn, history, critical_hit)
+        else:
+            print('Ход {0}. Противник промахнулся по Ведьмаку'.format(turn))
 
 class Drowner(Unit):
     def __init__(self, level):
@@ -415,4 +418,7 @@ class Drowner(Unit):
                     print('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
                     history.append('Ход {0}. Противник кританул по Ведьмаку'.format(turn))
 
-            witcher.witcher_shield_damage(damage, turn, history, critical_hit)
+                witcher.witcher_main_damage(damage, turn, history, critical_hit)
+
+            else:
+                print('Ход {0}. Противник промахнулся по Ведьмаку'.format(turn))

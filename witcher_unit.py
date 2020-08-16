@@ -195,7 +195,7 @@ class Witcher(Unit):
 
         return playerAction, damage
 
-    def witcher_shield_damage(self, damage, turn, history, critical_hit):
+    def witcher_main_damage(self, damage, turn, history, critical_hit):
         if self.shield > 0:
             if damage > self.shield:
                 diff_damage = damage - self.shield
