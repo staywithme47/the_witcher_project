@@ -30,34 +30,21 @@ class Game:
         accuracy = self.enemies[0].accuracy
 
         if result == PlayerAction.axiy:
-            count = len(self.enemies)
+            attacker = random.choice(self.enemies)
+            attacker_position = self.enemies.index(attacker)
 
-            if count == 0:
-                return
+            if len(self.enemies) > 1:
+                defender = random.choice(self.enemies[:attacker_position] + self.enemies[attacker_position+1:])
 
-            while attacker is None or attacker.hp == 0:
-                attacker = random.choice(self.enemies)
-
-            while True:
-                if len(self.enemies) == 1:
-                    break
-
-                if count > 1:
-                    defender = random.choice(self.enemies)
+                if random.random() > accuracy:
+                    print('Ход {0}. Противник номер {1} промахнулся по противнику номер {2} под действием Аксия'
+                                                   .format(self.turn, self.enemies.index(attacker),
+                                                                                      self.enemies.index(defender)))
+                    self.history.append('Ход {0}. Противник номер {1} промахнулся по противнику номер {2} под действием Аксия'
+                                                                            .format(self.turn, self.enemies.index(attacker),
+                                                                                              self.enemies.index(defender)))
 
                 else:
-                    break
-
-                if defender != attacker:
-                    if random.random() > accuracy:
-                        print('Ход {0}. Противник номер {1} промахнулся по противнику номер {2} под действием Аксия'
-                                                       .format(self.turn, self.enemies.index(attacker),
-                                                                                          self.enemies.index(defender)))
-                        self.history.append('Ход {0}. Противник номер {1} промахнулся по противнику номер {2} под действием Аксия'
-                                                       .format(self.turn, self.enemies.index(attacker),
-                                                                                          self.enemies.index(defender)))
-                        break
-
                     k = 1.0
 
                     if isinstance(defender, Ghost) and defender.in_astral:
@@ -74,7 +61,6 @@ class Game:
                       '{3} урона'.format(self.turn, self.enemies.index(attacker), self.enemies.index(defender), damage))
                     self.history.append('Ход {0}. Противник номер {1} попал по противнику номер {2} по действием знака Аксий и нанес '
                       '{3} урона'.format(self.turn, self.enemies.index(attacker), self.enemies.index(defender), damage))
-                    break
 
         for i in range(len(self.enemies)):
             enemy = self.enemies[i]
@@ -95,8 +81,7 @@ class Game:
 
             for enemy in self.enemies:
                 if enemy.hp <= 0:
-                    number: int = 1
-                    Unit.update_amount_of_alive(number)
+                    Unit.update_amount_of_alive(False)
 
             self.enemies: list = list(filter(lambda x: x.hp > 0, self.enemies))
             if not self.enemies_is_alive():
@@ -105,7 +90,7 @@ class Game:
             self.get_damage_to_witcher(result)
 
             if self.witcher.hp <= 0:
-                Unit.update_amount_of_alive(1)
+                Unit.update_amount_of_alive(False)
                 break
 
             self.turn += 1
